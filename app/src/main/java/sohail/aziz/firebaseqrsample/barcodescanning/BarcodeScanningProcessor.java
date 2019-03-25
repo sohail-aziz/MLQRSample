@@ -22,6 +22,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcode;
 import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcodeDetector;
+import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcodeDetectorOptions;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 
 import java.io.IOException;
@@ -37,9 +38,16 @@ import sohail.aziz.firebaseqrsample.common.GraphicOverlay;
  */
 public class BarcodeScanningProcessor extends VisionProcessorBase<List<FirebaseVisionBarcode>> {
 
+    public interface BarCodeCallback {
+        void onSuccess(FirebaseVisionBarcode barcode);
+
+        void onFailure(Throwable throwable);
+    }
+
     private static final String TAG = "BarcodeScanProc";
 
     private final FirebaseVisionBarcodeDetector detector;
+    private BarCodeCallback barCodeCallback;
 
     public BarcodeScanningProcessor() {
         // Note that if you know which format of barcode your app is dealing with, detection will be
@@ -48,6 +56,21 @@ public class BarcodeScanningProcessor extends VisionProcessorBase<List<FirebaseV
         //     .setBarcodeFormats(FirebaseVisionBarcode.FORMAT_QR_CODE)
         //     .build();
         detector = FirebaseVision.getInstance().getVisionBarcodeDetector();
+    }
+
+    public BarcodeScanningProcessor(@NonNull BarCodeCallback barCodeCallback) {
+        this.barCodeCallback = barCodeCallback;
+        // Note that if you know which format of barcode your app is dealing with, detection will be
+        // faster to specify the supported barcode formats one by one, e.g.
+        // new FirebaseVisionBarcodeDetectorOptions.Builder()
+        //     .setBarcodeFormats(FirebaseVisionBarcode.FORMAT_QR_CODE)
+        //     .build();
+
+        final FirebaseVisionBarcodeDetectorOptions options = new FirebaseVisionBarcodeDetectorOptions.Builder()
+                .setBarcodeFormats(FirebaseVisionBarcode.FORMAT_QR_CODE)
+                .build();
+        detector = FirebaseVision.getInstance().getVisionBarcodeDetector(options);
+
     }
 
     @Override
@@ -79,12 +102,20 @@ public class BarcodeScanningProcessor extends VisionProcessorBase<List<FirebaseV
             FirebaseVisionBarcode barcode = barcodes.get(i);
             BarcodeGraphic barcodeGraphic = new BarcodeGraphic(graphicOverlay, barcode);
             graphicOverlay.add(barcodeGraphic);
+
+            if (barCodeCallback != null) {
+                barCodeCallback.onSuccess(barcode);
+            }
         }
         graphicOverlay.postInvalidate();
+
     }
 
     @Override
     protected void onFailure(@NonNull Exception e) {
         Log.e(TAG, "Barcode detection failed " + e);
+        if (barCodeCallback != null) {
+            barCodeCallback.onFailure(e);
+        }
     }
 }

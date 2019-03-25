@@ -86,6 +86,8 @@ public class CameraSource {
     private final float requestedFps = 20.0f;
     private final int requestedPreviewWidth = 480;
     private final int requestedPreviewHeight = 360;
+
+
     private final boolean requestedAutoFocus = true;
 
     // These instances need to be held onto to avoid GC of their underlying resources.  Even though

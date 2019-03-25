@@ -68,6 +68,6 @@ public class BarcodeGraphic extends GraphicOverlay.Graphic {
         canvas.drawRect(rect, rectPaint);
 
         // Renders the barcode at the bottom of the box.
-        canvas.drawText(barcode.getRawValue(), rect.left, rect.bottom, barcodePaint);
+        //canvas.drawText(barcode.getRawValue(), rect.left, rect.bottom, barcodePaint);
     }
 }
