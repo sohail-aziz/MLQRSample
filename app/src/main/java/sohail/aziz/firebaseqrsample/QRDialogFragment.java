@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Toast;
 
 import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcode;
@@ -47,6 +48,12 @@ public class QRDialogFragment extends AppCompatDialogFragment implements Barcode
         return fragment;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setStyle(STYLE_NO_TITLE,0);
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -60,6 +67,7 @@ public class QRDialogFragment extends AppCompatDialogFragment implements Barcode
         preview = view.findViewById(R.id.firePreview);
         graphicOverlay = view.findViewById(R.id.fireFaceOverlay);
 
+
         if (allPermissionsGranted()) {
             createCameraSource(BARCODE_DETECTION);
         } else {
@@ -68,11 +76,6 @@ public class QRDialogFragment extends AppCompatDialogFragment implements Barcode
 
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-    }
 
     @Override
     public void onStart() {
@@ -82,6 +85,7 @@ public class QRDialogFragment extends AppCompatDialogFragment implements Barcode
             int width = ViewGroup.LayoutParams.MATCH_PARENT;
             int height = ViewGroup.LayoutParams.MATCH_PARENT;
             dialog.getWindow().setLayout(width, height);
+
         }
     }
 
