@@ -90,6 +90,8 @@ public class CameraSourcePreview extends ViewGroup {
                 Size size = cameraSource.getPreviewSize();
                 int min = Math.min(size.getWidth(), size.getHeight());
                 int max = Math.max(size.getWidth(), size.getHeight());
+
+                Log.d("sohail", "startIfReady: max x min=" + max + " x " + min);
                 if (isPortraitMode()) {
                     // Swap width and height sizes when in portrait, since it will be rotated by
                     // 90 degrees
@@ -148,15 +150,19 @@ public class CameraSourcePreview extends ViewGroup {
         final int layoutHeight = bottom - top;
 
         // Computes height and width for potentially doing fit width.
-        int childWidth = layoutWidth;
-        int childHeight= layoutHeight; //todo sohail, make full screen
+//        int childWidth = layoutWidth;
 //        int childHeight = (int) (((float) layoutWidth / (float) width) * height);
 
         // If height is too tall using fit width, does fit height instead.
-        if (childHeight > layoutHeight) {
-            childHeight = layoutHeight;
-            childWidth = (int) (((float) layoutHeight / (float) height) * width);
-        }
+        //sohail force fit height
+//        if (childHeight > layoutHeight) {
+        int childHeight = layoutHeight;
+        int childWidth = (int) (((float) layoutHeight / (float) height) * width);
+//        }
+
+
+        Log.d("sohail", "onLayout: screen heigh x screen width=" + layoutHeight + " x " + layoutWidth);
+        Log.d("sohail", " onLayout: child height x width=" + childHeight + " x " + childWidth);
 
         for (int i = 0; i < getChildCount(); ++i) {
             getChildAt(i).layout(0, 0, childWidth, childHeight);
